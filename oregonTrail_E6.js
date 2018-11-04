@@ -1,37 +1,24 @@
-function Traveler(_name, _food, _isHealthy) {
-    let name = _name;
-    let food = _food;
-    let isHealthy = _isHealthy;
 
-    this.setFood = function(newFood) {
-        food = newFood;
+
+//ES6 Traveler
+
+class Traveler {
+ 
+    constructor(_name, _food, _isHealthy) {
+        this.name = _name;
+        this.food = _food;
+        this.isHealthy = _isHealthy;
     }
 
-    this.huntWin = function () {
-        this.setFood(100);
-    }
+    getName() {return this.name;}
+    getFood() {return this.food;}
+    getHealth() {return this.isHealthy;}
+    setFood(newFood) {this.food = newFood}
+    setHealth(newHealth) {this.isHealthy = newHealth;}
+    eatFood() {this.setFood(this.getFood() - 20);}
+    huntWin() {this.setFood(100);}
 
-    this.eatFood = function () {
-        this.setFood(this.getFood() - 20);
-    }
-
-    this.getName = function() {
-        return  name;
-    }
-
-    this.getFood = function() {
-        return  food;
-    }
-
-    this.getHealth = function() {
-        return isHealthy;
-    }
-
-    this.setHealth = function(newHealth) {
-        isHealthy = newHealth;
-    }
-
-    this.hunt = function() {
+    hunt() {
         let huntChance = Math.floor(Math.random() * 10);
         console.log("Hunt Roll: " + huntChance);
         if (huntChance <= 4) {
@@ -43,9 +30,8 @@ function Traveler(_name, _food, _isHealthy) {
         }
     }
 
-    this.eat = function() {
+    eat() {
         if (this.getFood() >= 20) {
-            this.eatFood();
             console.log(this.getName() + " has eaten!");
         }
         else {
@@ -54,35 +40,28 @@ function Traveler(_name, _food, _isHealthy) {
             console.log(this.getName() + " is hungry!")
         }
     }
-
-    this.status = function() {
-        console.log(this.getName() + " has " + this.getFood() + " food and is " + (this.getHealth() ? "feeling well." : "feeling sick."));
-    }
 }
 
-var passengers = []
+//Converted one of Traveler functions to a prototype for the practice.
+Traveler.prototype.status = function(){
+    console.log(this.getName() + " has " + this.getFood() + " food and is " + (this.getHealth() ? "feeling well." : "feeling sick"));
+}
 
-function Wagon(_passengers, _capacity) {
-    let passengers = _passengers;
-    let capacity = _capacity;
+let passengers = []
 
-    this.getPassenger = function(i) {
-        return passengers[i];
+class Wagon {
+
+    constructor(_passengers, _capacity) {
+        this.passengers = _passengers;
+        this.capacity = _capacity;
     }
 
-    this.getPassengers = function() {
-        return passengers;
-    }
+    getPassenger(i) {return passengers[i];}
+    getPassengers() {return passengers;}
+    getPassengerCount() {return passengers.length;}
+    getCapacity() {return this.capacity;}
 
-    this.getPassengerCount = function() {
-        return passengers.length;
-    }
-
-    this.getCapacity = function() {
-        return capacity;
-    }
-
-    this.join = function(traveler) {
+    join(traveler) {
         if(this.getPassengerCount() < this.getCapacity()) {
             passengers.push(traveler);
         }
@@ -91,7 +70,7 @@ function Wagon(_passengers, _capacity) {
         }
     }
 
-    this.quarantine = function() {
+    quarantine() {
         let blackFlag = false;
         for (let i=0; i < this.getPassengerCount(); i++) {
             if (this.getPassenger(i).getHealth() === false) {
@@ -107,12 +86,12 @@ function Wagon(_passengers, _capacity) {
     }
 }
 
-function food(wagon) {
+function supplies(wagon) {
     var totalFood = 0;
     for (let traveler of wagon.getPassengers()) {
         totalFood = (totalFood + traveler.getFood());
     };
-    console.log("The wagon has " + totalFood + " food remaining.")
+    console.log("The wagon has " + totalFood + " food remaining.");
 }
 
 //Call Traveler Constructor to create travelers to populate a wagon
@@ -122,20 +101,17 @@ let traveler2 = new Traveler("Miki", 50, true);
 //Assign travelers to an initial array
 let travelers = [traveler1, traveler2]
 
-//Call Wagon Constructor to Build a Wagon
-let wagon1 = new Wagon(travelers, 3);
-
+//Test Hunt and Eat Functions on initial travelers:
 console.log("Test Hunt and Eat Functions on initial travelers:");
-for (let traveler of wagon1.getPassengers()) {
+for (let traveler of travelers) {
     traveler.hunt();
     traveler.eat();
     traveler.status();
 }
 console.log(" ");
 
-console.log("Test Quarantine Function for Negative Results:");
-wagon1.quarantine();
-console.log(" ");
+//Call Wagon Constructor to Build a Wagon
+let wagon1 = new Wagon(travelers, 3);
 
 //Construct another traveler outside of array to test join function
 let traveler3 = new Traveler("Bob", 65, false);
@@ -148,7 +124,7 @@ wagon1.quarantine();
 console.log(" ");
 
 console.log("Test food function on wagon1:");
-food(wagon1);
+supplies(wagon1);
 console.log(" ");
 
 for (let traveler of travelers) {
